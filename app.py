@@ -3,7 +3,8 @@ import os
 import zipfile
 import shutil
 from image2excel import generate_availability_from_image
-from shift_scheduler_v1 import main as run_scheduler
+from shift_scheduler_v1 import main as run_scheduler_v1
+from shift_scheduler_v2 import main as run_scheduler_v2
 
 st.set_page_config(page_title="고정근로 자동 배정기", layout="centered")
 
@@ -53,15 +54,15 @@ if uploaded_files:
         else:
             st.warning("⚠️ 생성된 엑셀 파일이 없습니다. 이미지 분석 실패 가능성 있음")
 
-    if st.button("2단계: 자동 배정 실행"):
+    if st.button("2단계: 자동 배정 실행 (v1)"):
         xlsx_files = [f for f in os.listdir("input") if f.endswith(".xlsx")]
         if not xlsx_files:
             st.error("❌ input 폴더에 가용시간표 파일이 없습니다. 1단계를 먼저 실행하세요.")
         else:
-            run_scheduler()
-            st.success("✅ 자동 배정 완료")
+            run_scheduler_v1()
+            st.success("✅ 자동 배정 완료 (v1)")
 
-            zip_path = "output/result_bundle.zip"
+            zip_path = "output/result_bundle_v1.zip"
             with zipfile.ZipFile(zip_path, "w") as zipf:
                 for root, _, files in os.walk("output"):
                     for file in files:
@@ -70,4 +71,23 @@ if uploaded_files:
                             zipf.write(file_path, arcname=file)
 
             with open(zip_path, "rb") as f:
-                st.download_button("📥 결과 ZIP 다운로드", f, file_name="근무표_결과.zip")
+                st.download_button("📥 결과 ZIP 다운로드 (v1)", f, file_name="근무표_결과_v1.zip")
+
+    if st.button("2단계: 자동 배정 실행 (v2)"):
+        xlsx_files = [f for f in os.listdir("input") if f.endswith(".xlsx")]
+        if not xlsx_files:
+            st.error("❌ input 폴더에 가용시간표 파일이 없습니다. 1단계를 먼저 실행하세요.")
+        else:
+            run_scheduler_v2()
+            st.success("✅ 자동 배정 완료 (v2)")
+
+            zip_path = "output/result_bundle_v2.zip"
+            with zipfile.ZipFile(zip_path, "w") as zipf:
+                for root, _, files in os.walk("output"):
+                    for file in files:
+                        if file.endswith(".xlsx"):
+                            file_path = os.path.join(root, file)
+                            zipf.write(file_path, arcname=file)
+
+            with open(zip_path, "rb") as f:
+                st.download_button("📥 결과 ZIP 다운로드 (v2)", f, file_name="근무표_결과_v2.zip")
