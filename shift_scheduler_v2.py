@@ -48,8 +48,8 @@ def main():
         if f.endswith(".xlsx") and not f.startswith("~$")
     ]
     timetable_df = build_direct_availability_timetable(xlsx_files)
-    timetable_df.to_excel(os.path.join(output_dir, "가용_시간표.xlsx"))
-    print("✅ 시간표 생성 완료: output/가용_시간표.xlsx")
+    timetable_df.to_excel(os.path.join(output_dir, "통합_가용_시간표.xlsx"))
+    print("✅ 시간표 생성 완료: output/통합_가용_시간표.xlsx")
 
 if __name__ == "__main__":
     main()
