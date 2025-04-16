@@ -15,10 +15,8 @@ uploaded_files = st.file_uploader(
 )
 
 # 업로드 전 폴더 초기화
-for folder in ["images", "input", "output"]:
-    if os.path.exists(folder):
-        shutil.rmtree(folder)
-    os.makedirs(folder)
+for folder in ["images", "input", "output/output_v1", "output/output_v2"]:
+    os.makedirs(folder, exist_ok=True)
 
 if uploaded_files:
     st.success(f"✅ {len(uploaded_files)}개 이미지 업로드 완료")
@@ -62,9 +60,9 @@ if uploaded_files:
             run_scheduler_v1()
             st.success("✅ 자동 배정 완료 (v1)")
 
-            zip_path = "output/result_bundle_v1.zip"
+            zip_path = "output/output_v1/result_bundle_v1.zip"
             with zipfile.ZipFile(zip_path, "w") as zipf:
-                for root, _, files in os.walk("output"):
+                for root, _, files in os.walk("output/output_v1"):
                     for file in files:
                         if file.endswith(".xlsx"):
                             file_path = os.path.join(root, file)
@@ -81,9 +79,9 @@ if uploaded_files:
             run_scheduler_v2()
             st.success("✅ 자동 배정 완료 (v2)")
 
-            zip_path = "output/result_bundle_v2.zip"
+            zip_path = "output/output_v2/result_bundle_v2.zip"
             with zipfile.ZipFile(zip_path, "w") as zipf:
-                for root, _, files in os.walk("output"):
+                for root, _, files in os.walk("output/output_v2"):
                     for file in files:
                         if file.endswith(".xlsx"):
                             file_path = os.path.join(root, file)
