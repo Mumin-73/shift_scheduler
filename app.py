@@ -15,30 +15,23 @@ def prepare_directories():
         shutil.rmtree(folder, ignore_errors=True)
         os.makedirs(folder)
 
+# 파일 업로드 처리
 if "step" not in st.session_state:
     st.session_state.step = 0
-if "v1_done" not in st.session_state:
-    st.session_state.v1_done = False
-if "v2_done" not in st.session_state:
-    st.session_state.v2_done = False
 
-# STEP 0: 파일 업로드
-if st.session_state.step == 0:
-    uploaded_files = st.file_uploader("시간표 이미지 업로드 (.jpg)", type=["jpg"], accept_multiple_files=True)
-    if uploaded_files:
-        prepare_directories()
-        st.session_state.uploaded_files = uploaded_files
-        for file in uploaded_files:
-            filepath = os.path.join("images", file.name)
-            with open(filepath, "wb") as f:
-                f.write(file.read())
-        st.session_state.step = 1
-        st.rerun()
+uploaded_files = st.file_uploader("시간표 이미지 업로드 (.jpg)", type=["jpg"], accept_multiple_files=True)
+if uploaded_files:
+    prepare_directories()
+    st.session_state.uploaded_files = uploaded_files
+    for file in uploaded_files:
+        filepath = os.path.join("images", file.name)
+        with open(filepath, "wb") as f:
+            f.write(file.read())
+    st.session_state.step = 1
+    st.rerun()
 
-# STEP 1: 가용시간표 생성
 if st.session_state.step >= 1:
     st.success(f"✅ {len(st.session_state.uploaded_files)}개 이미지 업로드 완료")
-
     if st.button("1단계: 가용시간표 생성"):
         created_files = []
         for file in st.session_state.uploaded_files:
@@ -57,19 +50,16 @@ if st.session_state.step >= 1:
             with zipfile.ZipFile(input_zip_path, "w") as zipf:
                 for file_path in created_files:
                     zipf.write(file_path, arcname=os.path.basename(file_path))
-            st.session_state.step = 2
-            st.session_state.v1_done = False
-            st.session_state.v2_done = False
+
             st.session_state.input_zip_path = input_zip_path
+            st.session_state.step = 2
             st.rerun()
 
-    # 항상 표시
     if "input_zip_path" in st.session_state:
         with open(st.session_state.input_zip_path, "rb") as f:
             st.download_button("📥 가용시간표 ZIP 다운로드", f, file_name="가용시간표_모음.zip")
 
-# STEP 2: 자동 배정
-if st.session_state.step == 2:
+if st.session_state.step >= 2:
     col1, col2 = st.columns(2)
 
     with col1:
@@ -80,11 +70,10 @@ if st.session_state.step == 2:
                 for file in os.listdir("output/output_v1"):
                     if file.endswith(".xlsx"):
                         zipf.write(os.path.join("output/output_v1", file), arcname=file)
-            st.session_state.v1_done = True
             st.session_state.v1_zip_path = result_path
             st.rerun()
 
-        if st.session_state.v1_done and "v1_zip_path" in st.session_state:
+        if "v1_zip_path" in st.session_state:
             with open(st.session_state.v1_zip_path, "rb") as f:
                 st.download_button("📥 결과 ZIP 다운로드 (v1)", f, file_name="자동배정_결과_v1.zip")
 
@@ -96,10 +85,9 @@ if st.session_state.step == 2:
                 for file in os.listdir("output/output_v2"):
                     if file.endswith(".xlsx"):
                         zipf.write(os.path.join("output/output_v2", file), arcname=file)
-            st.session_state.v2_done = True
             st.session_state.v2_zip_path = result_path
             st.rerun()
 
-        if st.session_state.v2_done and "v2_zip_path" in st.session_state:
+        if "v2_zip_path" in st.session_state:
             with open(st.session_state.v2_zip_path, "rb") as f:
                 st.download_button("📥 결과 ZIP 다운로드 (v2)", f, file_name="자동배정_결과_v2.zip")
