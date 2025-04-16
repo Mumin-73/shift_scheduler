@@ -71,7 +71,7 @@ if st.button("2단계: 자동 배정 실행 (v1)"):
     if not xlsx_files:
         st.error("❌ input 폴더에 가용시간표 파일이 없습니다. 1단계를 먼저 실행하세요.")
     else:
-        run_scheduler_v1()
+        run_scheduler_v1("output/output_v1")
         st.success("✅ 자동 배정 완료 (v1)")
 
         zip_path = "output/output_v1/result_bundle_v1.zip"
@@ -90,7 +90,7 @@ if st.button("2단계: 자동 배정 실행 (v2)"):
     if not xlsx_files:
         st.error("❌ input 폴더에 가용시간표 파일이 없습니다. 1단계를 먼저 실행하세요.")
     else:
-        run_scheduler_v2()
+        run_scheduler_v2("output/output_v2")
         st.success("✅ 자동 배정 완료 (v2)")
 
         zip_path = "output/output_v2/result_bundle_v2.zip"
