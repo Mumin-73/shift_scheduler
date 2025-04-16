@@ -16,7 +16,9 @@ uploaded_files = st.file_uploader(
 
 # 업로드 전 폴더 초기화
 for folder in ["images", "input", "output/output_v1", "output/output_v2"]:
-    os.makedirs(folder, exist_ok=True)
+    if os.path.exists(folder):
+        shutil.rmtree(folder)
+    os.makedirs(folder)
 
 if uploaded_files:
     st.success(f"✅ {len(uploaded_files)}개 이미지 업로드 완료")
@@ -48,7 +50,7 @@ if uploaded_files:
                     zipf.write(file_path, arcname=os.path.basename(file_path))
 
             with open(input_zip_path, "rb") as f:
-                st.download_button("📥 가용시간표 ZIP 다운로드", f, file_name="가용시간표_모음.zip")
+                st.download_button("📥 가용시간표 ZIP 다운로드", f, file_name="개인별_가용시간표_모음.zip")
         else:
             st.warning("⚠️ 생성된 엑셀 파일이 없습니다. 이미지 분석 실패 가능성 있음")
 
@@ -69,7 +71,7 @@ if uploaded_files:
                             zipf.write(file_path, arcname=file)
 
             with open(zip_path, "rb") as f:
-                st.download_button("📥 결과 ZIP 다운로드 (v1)", f, file_name="근무표_결과_v1.zip")
+                st.download_button("📥 결과 ZIP 다운로드 (v1)", f, file_name="통합_가용시간표.zip")
 
     if st.button("2단계: 자동 배정 실행 (v2)"):
         xlsx_files = [f for f in os.listdir("input") if f.endswith(".xlsx")]
@@ -88,4 +90,4 @@ if uploaded_files:
                             zipf.write(file_path, arcname=file)
 
             with open(zip_path, "rb") as f:
-                st.download_button("📥 결과 ZIP 다운로드 (v2)", f, file_name="근무표_결과_v2.zip")
+                st.download_button("📥 결과 ZIP 다운로드 (v2)", f, file_name="최종_근무표.zip")
