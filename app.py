@@ -15,11 +15,14 @@ def prepare_directories():
         shutil.rmtree(folder, ignore_errors=True)
         os.makedirs(folder)
 
-# 파일 업로드 처리
+# 세션 초기화
 if "step" not in st.session_state:
     st.session_state.step = 0
 
+# 항상 업로드 창은 보이게
 uploaded_files = st.file_uploader("시간표 이미지 업로드 (.jpg)", type=["jpg"], accept_multiple_files=True)
+
+# 파일 업로드 처리
 if uploaded_files:
     prepare_directories()
     st.session_state.uploaded_files = uploaded_files
@@ -30,6 +33,7 @@ if uploaded_files:
     st.session_state.step = 1
     st.rerun()
 
+# 1단계 버튼
 if st.session_state.step >= 1:
     st.success(f"✅ {len(st.session_state.uploaded_files)}개 이미지 업로드 완료")
     if st.button("1단계: 가용시간표 생성"):
@@ -55,10 +59,12 @@ if st.session_state.step >= 1:
             st.session_state.step = 2
             st.rerun()
 
-    if "input_zip_path" in st.session_state:
-        with open(st.session_state.input_zip_path, "rb") as f:
-            st.download_button("📥 가용시간표 ZIP 다운로드", f, file_name="가용시간표_모음.zip")
+# 1단계 결과 다운로드 버튼
+if "input_zip_path" in st.session_state:
+    with open(st.session_state.input_zip_path, "rb") as f:
+        st.download_button("📥 가용시간표 ZIP 다운로드", f, file_name="가용시간표_모음.zip")
 
+# 2단계 실행 및 다운로드 버튼
 if st.session_state.step >= 2:
     col1, col2 = st.columns(2)
 
