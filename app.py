@@ -1,10 +1,15 @@
-import streamlit as st import os import zipfile import shutil from image2excel import generate_availability_from_image from shift_scheduler_v1 import main as run_scheduler
+import streamlit as st 
+import os 
+import zipfile 
+import shutil 
+from image2excel import generate_availability_from_image 
+from shift_scheduler_v1 import main as run_scheduler
 
 st.set_page_config(page_title="고정근로 자동 배정기", layout="centered") st.title("📅 고정근로 자동 배정기")
 
 uploaded_files = st.file_uploader( "시간표 이미지 업로드 (.jpg)", type=["jpg"], accept_multiple_files=True )
 
-업로드 전 폴더 초기화
+# 업로드 전 폴더 초기화
 
 for folder in ["images", "input", "output"]: if os.path.exists(folder): shutil.rmtree(folder) os.makedirs(folder)
 
@@ -48,3 +53,4 @@ if st.button("2단계: 자동 배정 실행"):
 
     with open(zip_path, "rb") as f:
         st.download_button("📥 결과 ZIP 다운로드", f, file_name="근무표_결과.zip")
+
