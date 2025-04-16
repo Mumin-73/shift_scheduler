@@ -9,8 +9,6 @@ st.set_page_config(page_title="고정근로 자동 배정기", layout="centered"
 
 uploaded_files = st.file_uploader( "시간표 이미지 업로드 (.jpg)", type=["jpg"], accept_multiple_files=True )
 
-업로드 전 폴더 초기화
-
 for folder in ["images", "input", "output"]: if os.path.exists(folder): shutil.rmtree(folder) os.makedirs(folder)
 
 if uploaded_files: st.success(f"✅ {len(uploaded_files)}개 이미지 업로드 완료")
