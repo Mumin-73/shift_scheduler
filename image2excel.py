@@ -46,6 +46,9 @@ def standardize_dataframe(df):
     standard_index = ["8:30", "9:00", "9:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30",
                       "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30"]
     standard_columns = ['월', '화', '수', '목', '금']
+    df.index.name = None
+    df.columns.name = None
+    df = df[~df.index.duplicated(keep='first')]
     return df.reindex(index=standard_index, columns=standard_columns, fill_value=1)
 
 def generate_availability_from_image(image_path, bg='auto'):
@@ -113,13 +116,18 @@ def generate_availability_from_image(image_path, bg='auto'):
             for j in range(len(all_x) - 1):
                 cell_x1, cell_x2 = all_x[j], all_x[j+1]
                 cell_y1, cell_y2 = all_y[i], all_y[i+1]
-                if (bx < cell_x2 and bx + bw > cell_x1 and
-                    by < cell_y2 and by + bh > cell_y1):
+                x_overlap = max(0, min(bx + bw, cell_x2) - max(bx, cell_x1))
+                y_overlap = max(0, min(by + bh, cell_y2) - max(by, cell_y1))
+                area_overlap = x_overlap * y_overlap
+                area_cell = (cell_x2 - cell_x1) * (cell_y2 - cell_y1)
+                if area_overlap / area_cell > 0.2:
                     availability[i, j] = 0
 
-    df = pd.DataFrame(availability, 
-                      index=[f'{i//2 + 9}:{"30" if i%2 else "00"}' for i in range(len(all_y)-1)],
-                      columns=['월', '화', '수', '목', '금'][:len(all_x)-1])
+    df = pd.DataFrame(
+        availability,
+        index=[f"{i//2 + 9}:{'30' if i%2 else '00'}" for i in range(len(all_y)-1)],
+        columns=['월', '화', '수', '목', '금'][:len(all_x)-1]
+    )
 
     return standardize_dataframe(df)
 
