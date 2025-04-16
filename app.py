@@ -14,11 +14,13 @@ uploaded_files = st.file_uploader(
     "시간표 이미지 업로드 (.jpg)", type=["jpg"], accept_multiple_files=True
 )
 
-# 업로드 전 폴더 초기화
-for folder in ["images", "input", "output/output_v1", "output/output_v2"]:
-    if os.path.exists(folder):
-        shutil.rmtree(folder)
-    os.makedirs(folder)
+# 최초 실행 시에만 폴더 초기화
+if "folders_initialized" not in st.session_state:
+    for folder in ["images", "input", "output/output_v1", "output/output_v2"]:
+        if os.path.exists(folder):
+            shutil.rmtree(folder)
+        os.makedirs(folder)
+    st.session_state.folders_initialized = True
 
 if uploaded_files:
     st.success(f"✅ {len(uploaded_files)}개 이미지 업로드 완료")
