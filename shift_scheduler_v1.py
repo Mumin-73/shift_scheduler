@@ -136,7 +136,7 @@ def calculate_total_hours(assignment_df: pd.DataFrame, workers: List[str]) -> Di
 def save_results_to_excel(pretty_df: pd.DataFrame, total_hours: Dict[str, float], folder: str = "."):
     result_df = pd.DataFrame(list(total_hours.items()), columns=["이름", "총 근무시간"])
     os.makedirs(folder, exist_ok=True)
-    pretty_df.to_excel(os.path.join(folder, "최종_시간표.xlsx"), index=True)
+    pretty_df.to_excel(os.path.join(folder, "자동배정_시간표.xlsx"), index=True)
     result_df.to_excel(os.path.join(folder, "총_근무시간.xlsx"), index=False)
 
 def main():
