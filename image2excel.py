@@ -124,9 +124,9 @@ def generate_availability_from_image(image_path, bg='auto'):
                     availability[i, j] = 0
 
     df = pd.DataFrame(
-        availability,
-        index=[f"{i//2 + 9}:{'30' if i%2 else '00'}" for i in range(len(all_y)-1)],
-        columns=['월', '화', '수', '목', '금'][:len(all_x)-1]
+    availability,
+    index=[f"{(i//2 + 9):02d}:{'30' if i%2 else '00'}" for i in range(len(all_y)-1)],
+    columns=['월', '화', '수', '목', '금'][:len(all_x)-1]
     )
 
     return standardize_dataframe(df)
