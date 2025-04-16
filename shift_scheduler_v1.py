@@ -36,7 +36,7 @@ def build_direct_availability_timetable(folder_files):
     df_out = timetable.pivot(index="시간", columns="요일", values="근무자")
     return df_out[["월", "화", "수", "목", "금"]]
 
-def main(output_dir="output"):
+def main(output_dir="output/output_v1"):
     os.makedirs(output_dir, exist_ok=True)
 
     input_dir = "input"
@@ -45,6 +45,10 @@ def main(output_dir="output"):
         for f in os.listdir(input_dir)
         if f.endswith(".xlsx") and not f.startswith("~$")
     ]
+
+    if not xlsx_files:
+        print("⚠️ 입력 파일이 없습니다.")
+        return
 
     timetable_df = build_direct_availability_timetable(xlsx_files)
     output_path = os.path.join(output_dir, "통합_가용_시간표.xlsx")
