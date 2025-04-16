@@ -33,11 +33,12 @@ if uploaded_files:
         for file in uploaded_files:
             filepath = os.path.join("images", file.name)
             try:
-                generate_availability_from_image(filepath)
-                created_name = os.path.splitext(file.name)[0] + ".xlsx"
-                created_path = os.path.join("input", created_name)
-                if os.path.exists(created_path):
-                    created_files.append(created_path)
+                df = generate_availability_from_image(filepath)
+                name = os.path.splitext(file.name)[0]
+                excel_path = os.path.join("input", f"{name}.xlsx")
+                df.to_excel(excel_path, index=True)
+                if os.path.exists(excel_path):
+                    created_files.append(excel_path)
             except Exception as e:
                 st.error(f"❌ {file.name} 처리 실패: {e}")
 
@@ -50,7 +51,7 @@ if uploaded_files:
                     zipf.write(file_path, arcname=os.path.basename(file_path))
 
             with open(input_zip_path, "rb") as f:
-                st.download_button("📥 가용시간표 ZIP 다운로드", f, file_name="개인별_가용시간표_모음.zip")
+                st.download_button("📥 가용시간표 ZIP 다운로드", f, file_name="가용시간표_모음.zip")
         else:
             st.warning("⚠️ 생성된 엑셀 파일이 없습니다. 이미지 분석 실패 가능성 있음")
 
@@ -71,7 +72,7 @@ if uploaded_files:
                             zipf.write(file_path, arcname=file)
 
             with open(zip_path, "rb") as f:
-                st.download_button("📥 결과 ZIP 다운로드 (v1)", f, file_name="통합_가용시간표.zip")
+                st.download_button("📥 결과 ZIP 다운로드 (v1)", f, file_name="근무표_결과_v1.zip")
 
     if st.button("2단계: 자동 배정 실행 (v2)"):
         xlsx_files = [f for f in os.listdir("input") if f.endswith(".xlsx")]
@@ -90,4 +91,4 @@ if uploaded_files:
                             zipf.write(file_path, arcname=file)
 
             with open(zip_path, "rb") as f:
-                st.download_button("📥 결과 ZIP 다운로드 (v2)", f, file_name="최종_근무표.zip")
+                st.download_button("📥 결과 ZIP 다운로드 (v2)", f, file_name="근무표_결과_v2.zip")
