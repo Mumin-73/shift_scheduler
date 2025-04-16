@@ -24,17 +24,18 @@ uploaded_files = st.file_uploader("시간표 이미지 업로드 (.jpg)", type=[
 
 # 파일 업로드 처리
 if uploaded_files:
-    prepare_directories()
-    st.session_state.uploaded_files = uploaded_files
-    for file in uploaded_files:
-        filepath = os.path.join("images", file.name)
-        with open(filepath, "wb") as f:
-            f.write(file.read())
-    st.session_state.step = 1
-    st.rerun()
+    if "uploaded_files" not in st.session_state:
+        prepare_directories()
+        for file in uploaded_files:
+            filepath = os.path.join("images", file.name)
+            with open(filepath, "wb") as f:
+                f.write(file.read())
+        st.session_state.uploaded_files = uploaded_files
+        st.session_state.step = 1
+        st.rerun()
 
 # 1단계 버튼
-if st.session_state.step >= 1:
+if "uploaded_files" in st.session_state and st.session_state.step >= 1:
     st.success(f"✅ {len(st.session_state.uploaded_files)}개 이미지 업로드 완료")
     if st.button("1단계: 가용시간표 생성"):
         created_files = []
