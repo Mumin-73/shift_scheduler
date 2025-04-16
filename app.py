@@ -1,4 +1,9 @@
-import streamlit as st import os import zipfile import shutil from image2excel import generate_availability_from_image from shift_scheduler_v1 import main as run_scheduler
+import streamlit as st
+import os
+import zipfile
+import shutil
+from image2excel import generate_availability_from_image
+from shift_scheduler_v1 import main as run_scheduler
 
 st.set_page_config(page_title="고정근로 자동 배정기", layout="centered") st.title("📅 고정근로 자동 배정기")
 
